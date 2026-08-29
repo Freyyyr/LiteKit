@@ -214,7 +214,6 @@ func handleOIDCCallback(w http.ResponseWriter, r *http.Request) {
 	if identity == "" {
 		identity = "utilisateur-oidc"
 	}
-	...
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "visio_session",
