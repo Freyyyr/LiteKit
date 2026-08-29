@@ -35,6 +35,7 @@ var (
 	// OIDC Config
 	oauth2Config *oauth2.Config
 	oidcVerifier *oidc.IDTokenVerifier
+	oidcProvider *oidc.Provider
 )
 
 func mustEnv(key string) string {
@@ -68,16 +69,16 @@ func main() {
 		clientSecret := mustEnv("OIDC_CLIENT_SECRET")
 		redirectURL := mustEnv("OIDC_REDIRECT_URL")
 
-		provider, err := oidc.NewProvider(ctx, issuerURL)
+		oidcProvider, err := oidc.NewProvider(ctx, issuerURL)
 		if err != nil {
 			log.Fatalf("Failed to initialize OIDC provider: %v", err)
 		}
 
-		oidcVerifier = provider.Verifier(&oidc.Config{ClientID: clientID})
+		oidcVerifier = oidcProvider.Verifier(&oidc.Config{ClientID: clientID})
 		oauth2Config = &oauth2.Config{
 			ClientID:     clientID,
 			ClientSecret: clientSecret,
-			Endpoint:     provider.Endpoint(),
+			Endpoint:     oidcProvider.Endpoint(),
 			RedirectURL:  redirectURL,
 			Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 		}
@@ -198,21 +199,23 @@ func handleOIDCCallback(w http.ResponseWriter, r *http.Request) {
 		PreferredUsername string `json:"preferred_username"`
 		Name              string `json:"name"`
 	}
-	if err := idToken.Claims(&claims); err != nil {
-		http.Error(w, "Failed to parse claims: "+err.Error(), http.StatusInternalServerError)
-		return
+	_ = idToken.Claims(&claims)
+
+	if userInfo, err := oidcProvider.UserInfo(ctx, oauth2.StaticTokenSource(token)); err == nil {
+		_ = userInfo.Claims(&claims)
+	} else {
+		log.Printf("userinfo fetch failed: %v", err)
 	}
 
-	// Déterminer l'identifiant utilisateur (email ou username)
-	identity := claims.Email
+	identity := claims.PreferredUsername
 	if identity == "" {
-		identity = claims.PreferredUsername
+		identity = claims.Email
 	}
 	if identity == "" {
 		identity = "utilisateur-oidc"
 	}
+	...
 
-	// Création du cookie de session validé
 	http.SetCookie(w, &http.Cookie{
 		Name:     "visio_session",
 		Value:    identity,
@@ -222,7 +225,6 @@ func handleOIDCCallback(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 	})
 
-	// Rediriger vers l'accueil de l'application
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 

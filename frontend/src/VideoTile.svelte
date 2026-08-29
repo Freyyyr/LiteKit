@@ -17,6 +17,7 @@
     if (videoTrack) videoTrack.attach(node);
     return {
       update(newTrack: Track | null | undefined) {
+        if (newTrack === videoTrack) return;
         if (videoTrack) videoTrack.detach(node);
         if (newTrack) newTrack.attach(node);
         videoTrack = newTrack;

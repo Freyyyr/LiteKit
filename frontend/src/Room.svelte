@@ -224,14 +224,14 @@
       {#if layoutMode === 'focus' && focusedId && tiles.find(t => t.id === focusedId)}
         <div class="layout-focused">
           <div class="focused-main">
-            {#each tiles.filter(t => t.id === focusedId) as t}
+            {#each tiles.filter(t => t.id === focusedId) as t (t.id)}
               <div class="tile-container">
                 <VideoTile tileId={t.id} name={t.name} track={t.track} isLocal={t.isLocal} isScreen={t.isScreen} isSpeaking={t.isSpeaking} isMuted={mutedUsers[t.name]} on:contextmenu={openContextMenu} />
               </div>
             {/each}
           </div>
           <div class="focused-strip">
-            {#each tiles.filter(t => t.id !== focusedId) as t}
+            {#each tiles.filter(t => t.id !== focusedId) as t (t.id)}
               <div class="tile-container">
                 <VideoTile tileId={t.id} name={t.name} track={t.track} isLocal={t.isLocal} isScreen={t.isScreen} isSpeaking={t.isSpeaking} isMuted={mutedUsers[t.name]} on:contextmenu={openContextMenu} />
               </div>
@@ -240,7 +240,7 @@
         </div>
       {:else}
         <div class="layout-grid">
-          {#each tiles as t}
+          {#each tiles as t (t.id)}
             <div class="tile-container">
               <VideoTile tileId={t.id} name={t.name} track={t.track} isLocal={t.isLocal} isScreen={t.isScreen} isSpeaking={t.isSpeaking} isMuted={mutedUsers[t.name]} on:contextmenu={openContextMenu} />
             </div>
