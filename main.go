@@ -95,9 +95,8 @@ func main() {
 	}
 	fileServer := http.FileServer(http.FS(sub))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// En mode OIDC, si l'utilisateur demande la page principale sans session, 
-		// on le redirige instantanément vers le flux de connexion.
-		if authMode == "oidc" && (r.URL.Path == "/" || r.URL.Path == "/index.html") {
+		isJoinLink := r.URL.Query().Get("room") != ""
+		if authMode == "oidc" && !isJoinLink && (r.URL.Path == "/" || r.URL.Path == "/index.html") {
 			if _, err := r.Cookie("visio_session"); err != nil {
 				http.Redirect(w, r, "/auth/login", http.StatusTemporaryRedirect)
 				return
