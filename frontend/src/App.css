@@ -1,0 +1,65 @@
+.app-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.panel {
+    background: var(--bg-panel);
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.panel h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+.panel p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.panel input {
+    width: 100%;
+    background: var(--bg-input);
+    color: var(--text-main); /* Correction de la couleur du texte */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 1rem;
+}
+
+.panel .btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.panel .btn.primary {
+    background: var(--primary);
+    color: white;
+}
+.panel .btn.primary:hover {
+    background: var(--primary-hover);
+}
+.panel .btn svg {
+    width: 20px;
+    height: 20px;
+}

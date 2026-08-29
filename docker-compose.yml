@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+    lightkit:
+        build:
+            context: .
+            dockerfile: Containerfile
+        container_name: lightkit
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:8080:8080"
+        env_file:
+            - .env
+        networks:
+            - lightkit-net
+
+networks:
+    lightkit-net:
+        driver: bridge
