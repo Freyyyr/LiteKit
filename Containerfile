@@ -5,18 +5,22 @@ RUN bun install
 COPY frontend/ .
 RUN bun run build
 
-FROM golang:1.21-alpine AS backend-builder
+FROM golang:alpine AS backend-builder
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
+
+RUN apk add --no-cache git
+
 COPY . .
+
 COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
-RUN CGO_ENABLED=0 GOOS=linux go build -o lightkit .
+
+RUN go mod tidy
+RUN CGO_ENABLED=0 GOOS=linux go build -o litekit .
 
 FROM alpine:latest
 WORKDIR /app
 RUN apk add --no-cache ca-certificates
-COPY --from=backend-builder /app/lightkit /app/lightkit
+COPY --from=backend-builder /app/litekit /app/litekit
 
 EXPOSE 8080
-CMD ["/app/lightkit"]
+CMD ["/app/litekit"]

@@ -60,7 +60,7 @@ go run .
 ### 3. Container Build (Podman / Docker)
 
 ```bash
-podman build -t localhost/callapp:latest -f Containerfile .
+podman build -t localhost/litekit:latest -f Containerfile .
 ```
 
 ---
