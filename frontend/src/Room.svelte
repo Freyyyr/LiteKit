@@ -66,9 +66,10 @@
   $: ownScreenTile = screenTracks[myName]
     ? [{ id: `screen-${myName}`, name: "Votre écran", track: screenTracks[myName], isLocal: true, isScreen: true, isSpeaking: false }]
     : [];
+  // Tous les participants distants ont une tuile, caméra active ou non
+  // (VideoTile affiche un placeholder/avatar si track est null)
   $: remoteCamTiles = participants
-    .filter(p => videoTracks[p.identity])
-    .map(p => ({ id: `cam-${p.identity}`, name: p.identity, track: videoTracks[p.identity], isLocal: false, isScreen: false, isSpeaking: activeSpeakers.has(p.identity) }));
+    .map(p => ({ id: `cam-${p.identity}`, name: p.identity, track: videoTracks[p.identity] ?? null, isLocal: false, isScreen: false, isSpeaking: activeSpeakers.has(p.identity) }));
   $: remoteScreenTiles = participants
     .filter(p => screenTracks[p.identity])
     .map(p => ({ id: `screen-${p.identity}`, name: `${p.identity} (Écran)`, track: screenTracks[p.identity], isLocal: false, isScreen: true, isSpeaking: false }));
@@ -78,8 +79,8 @@
   // Tiles disponibles pour être mises en avant, écran partagé inclus (le sien aussi)
   $: focusableTiles = [...otherTiles, ...ownScreenTile];
   $: anyScreenShare = ownScreenTile.length > 0 || remoteScreenTiles.length > 0;
-  // Dès qu'un participant a caméra ou écran actif, on réduit "soi" en PiP
-  $: isSelfPip = otherTiles.length > 0;
+  // Dès qu'il y a au moins un autre participant dans la room, on réduit "soi" en PiP
+  $: isSelfPip = participants.length > 0;
 
   // Bascule automatique en "mise en avant" dès qu'un partage d'écran démarre,
   // sauf si l'utilisateur a explicitement choisi une disposition
