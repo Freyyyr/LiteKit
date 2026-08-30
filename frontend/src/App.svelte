@@ -72,7 +72,7 @@
     />
   {:else}
     <div class="panel">
-      <h1>Visio</h1>
+      <h1>LiteKit</h1>
       
       {#if !roomParam}
         <p>Démarrez une nouvelle réunion sécurisée</p>

@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"crypto/rand"
+	"embed"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"embed"
 	"io/fs"
 	"log"
 	"net/http"
@@ -60,8 +60,8 @@ func main() {
 	listenAddr = envOr("LISTEN_ADDR", ":8080")
 	authMode = envOr("AUTH_MODE", "forward")
 	forwardHeader = envOr("FORWARD_AUTH_HEADER", "Remote-User")
-	
-	var err error 
+
+	var err error
 	// Initialisation OIDC si activé
 	if authMode == "oidc" {
 		ctx := context.Background()
