@@ -60,7 +60,8 @@ func main() {
 	listenAddr = envOr("LISTEN_ADDR", ":8080")
 	authMode = envOr("AUTH_MODE", "forward")
 	forwardHeader = envOr("FORWARD_AUTH_HEADER", "Remote-User")
-
+	
+	var err error 
 	// Initialisation OIDC si activé
 	if authMode == "oidc" {
 		ctx := context.Background()
@@ -69,7 +70,7 @@ func main() {
 		clientSecret := mustEnv("OIDC_CLIENT_SECRET")
 		redirectURL := mustEnv("OIDC_REDIRECT_URL")
 
-		oidcProvider, err := oidc.NewProvider(ctx, issuerURL)
+		oidcProvider, err = oidc.NewProvider(ctx, issuerURL)
 		if err != nil {
 			log.Fatalf("Failed to initialize OIDC provider: %v", err)
 		}
